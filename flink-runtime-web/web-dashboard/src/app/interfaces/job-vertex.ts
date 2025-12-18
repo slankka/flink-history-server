@@ -96,6 +96,7 @@ export interface JobVertexTaskManager {
 
 export interface VertexTaskManagerDetail {
   duration: number;
+  host: string;
   endpoint: string;
   status: string;
   'start-time': number;

@@ -22,7 +22,7 @@
   [nzAnimated]="{ inkBar: true, tabPane: false }"
   [nzTabBarExtraContent]="extraTemplate"
 >
-  <nz-tab nzTitle="Overview">
+  <nz-tab nzTitle="概览">
     <nz-table
       class="no-border small"
       [nzData]="checkPointStats['latest'] ? [''] : []"
@@ -33,36 +33,36 @@
       <tbody>
         <ng-container *ngIf="checkPointStats['latest'] && checkPointStats['counts']">
           <tr>
-            <td><strong>Checkpoint Counts</strong></td>
+            <td><strong>快照计数</strong></td>
             <td>
               <span>
-                <strong>Triggered:</strong>
+                <strong>已触发:</strong>
                 {{ checkPointStats['counts']['total'] }}
               </span>
               <nz-divider nzType="vertical"></nz-divider>
               <span>
-                <strong>In Progress:</strong>
+                <strong>生成中:</strong>
                 {{ checkPointStats['counts']['in_progress'] }}
               </span>
               <nz-divider nzType="vertical"></nz-divider>
               <span>
-                <strong>Completed:</strong>
+                <strong>已完成:</strong>
                 {{ checkPointStats['counts']['completed'] }}
               </span>
               <nz-divider nzType="vertical"></nz-divider>
               <span>
-                <strong>Failed:</strong>
+                <strong>失败:</strong>
                 {{ checkPointStats['counts']['failed'] }}
               </span>
               <nz-divider nzType="vertical"></nz-divider>
               <span>
-                <strong>Restored:</strong>
+                <strong>恢复:</strong>
                 {{ checkPointStats['counts']['restored'] }}
               </span>
             </td>
           </tr>
           <tr>
-            <td><strong>Latest Completed Checkpoint</strong></td>
+            <td><strong>最新完成快照</strong></td>
             <td *ngIf="checkPointStats['latest']['completed']">
               <span>
                 <strong>ID:</strong>
@@ -70,7 +70,7 @@
               </span>
               <nz-divider nzType="vertical"></nz-divider>
               <span>
-                <strong>Completion Time:</strong>
+                <strong>完成时间:</strong>
                 {{
                   checkPointStats['latest']['completed']['latest_ack_timestamp']
                     | date: 'yyyy-MM-dd HH:mm:ss.SSS'
@@ -78,19 +78,23 @@
               </span>
               <nz-divider nzType="vertical"></nz-divider>
               <span>
-                <strong>End to End Duration:</strong>
+                <strong>端到端延时:</strong>
                 {{
                   checkPointStats['latest']['completed']['end_to_end_duration'] | humanizeDuration
                 }}
               </span>
               <nz-divider nzType="vertical"></nz-divider>
               <span>
-                <strong>Checkpointed Data Size:</strong>
-                {{ checkPointStats['latest']['completed']['checkpointed_size'] | humanizeBytes }}
+                <strong>快照字节数</strong>
+                {{
+                  checkPointStats['latest']['completed']['checkpointed_size']
+                    ? checkPointStats['latest']['completed']['checkpointed_size']
+                    : (checkPointStats['latest']['completed']['state_size'] | humanizeBytes)
+                }}
               </span>
               <nz-divider nzType="vertical"></nz-divider>
               <span>
-                <strong>Full Checkpoint Data Size:</strong>
+                <strong>完整快照字节数:</strong>
                 {{ checkPointStats['latest']['completed']['state_size'] | humanizeBytes }}
               </span>
             </td>
@@ -104,7 +108,7 @@
             </td>
           </tr>
           <tr>
-            <td><strong>Latest Failed Checkpoint</strong></td>
+            <td><strong>最新失败快照</strong></td>
             <td *ngIf="checkPointStats['latest']['failed']">
               <span>
                 <strong>ID:</strong>
@@ -112,7 +116,7 @@
               </span>
               <nz-divider nzType="vertical"></nz-divider>
               <span>
-                <strong>Failure Time:</strong>
+                <strong>失败时间:</strong>
                 {{
                   checkPointStats['latest']['failed']['failure_timestamp']
                     | date: 'yyyy-MM-dd HH:mm:ss.SSS'
@@ -121,12 +125,12 @@
               <nz-divider nzType="vertical"></nz-divider>
               <span>
                 <strong *ngIf="checkPointStats['latest']['failed']['failure_message']">
-                  Cause:
+                  失败原因:
                 </strong>
                 {{ checkPointStats['latest']['failed']['failure_message'] }}
               </span>
               <span *ngIf="!checkPointStats['latest']['failed']['failure_message']">
-                <strong>Cause:</strong>
+                <strong>原因:</strong>
                 n/a
               </span>
             </td>
@@ -140,7 +144,7 @@
             </td>
           </tr>
           <tr>
-            <td><strong>Latest Savepoint</strong></td>
+            <td><strong>最新存档点</strong></td>
             <td *ngIf="checkPointStats['latest']['savepoint']">
               <span>
                 <strong>ID:</strong>
@@ -148,7 +152,7 @@
               </span>
               <nz-divider nzType="vertical"></nz-divider>
               <span>
-                <strong>Completion Time:</strong>
+                <strong>完成时间:</strong>
                 {{
                   checkPointStats['latest']['savepoint']['latest_ack_timestamp']
                     | date: 'yyyy-MM-dd HH:mm:ss.SSS'
@@ -156,22 +160,22 @@
               </span>
               <nz-divider nzType="vertical"></nz-divider>
               <span>
-                <strong>Checkpointed Data Size:</strong>
+                <strong>快照字节数:</strong>
                 {{ checkPointStats['latest']['savepoint']['checkpointed_size'] | humanizeBytes }}
               </span>
               <nz-divider nzType="vertical"></nz-divider>
               <span>
-                <strong>Full Checkpoint Data Size:</strong>
+                <strong>完整快照字节数:</strong>
                 {{ checkPointStats['latest']['savepoint']['state_size'] | humanizeBytes }}
               </span>
               <ng-container *ngIf="checkPointStats['latest']['savepoint']['savepointFormat']">
                 <nz-divider nzType="vertical"></nz-divider>
-                <strong>Savepoint Format:</strong>
+                <strong>存档点格式:</strong>
                 {{ checkPointStats['latest']['savepoint']['savepointFormat'] }}
               </ng-container>
               <nz-divider nzType="vertical"></nz-divider>
               <span>
-                <strong>Path:</strong>
+                <strong>路径:</strong>
                 {{ checkPointStats['latest']['savepoint']['external_path'] }}
               </span>
             </td>
@@ -185,7 +189,7 @@
             </td>
           </tr>
           <tr>
-            <td><strong>Latest Restore</strong></td>
+            <td><strong>最新恢复</strong></td>
             <td *ngIf="checkPointStats['latest']['restored']">
               <span>
                 <strong>ID:</strong>
@@ -193,7 +197,7 @@
               </span>
               <nz-divider nzType="vertical"></nz-divider>
               <span>
-                <strong>Restore Time:</strong>
+                <strong>恢复时间:</strong>
                 {{
                   checkPointStats['latest']['restored']['restore_timestamp']
                     | date: 'yyyy-MM-dd HH:mm:ss.SSS'
@@ -202,16 +206,16 @@
               <nz-divider nzType="vertical"></nz-divider>
               <span *ngIf="checkPointStats['latest']['restored']['is_savepoint']">
                 <strong>Type:</strong>
-                Savepoint
+                存档点
               </span>
               <span *ngIf="!checkPointStats['latest']['restored']['is_savepoint']">
                 <strong>Type:</strong>
-                Checkpoint
+                快照
               </span>
               <nz-divider nzType="vertical"></nz-divider>
               <span>
                 <strong *ngIf="checkPointStats['latest']['restored']['external_path']">
-                  Path:
+                  路径:
                 </strong>
                 {{ checkPointStats['latest']['restored']['external_path'] }}
               </span>
@@ -222,7 +226,7 @@
       </tbody>
     </nz-table>
   </nz-tab>
-  <nz-tab nzTitle="History">
+  <nz-tab nzTitle="历史记录">
     <nz-table
       class="no-border small"
       [nzSize]="'small'"
@@ -234,14 +238,14 @@
         <tr>
           <th nzWidth="70px"></th>
           <th><strong>ID</strong></th>
-          <th><strong>Status</strong></th>
-          <th><strong>Acknowledged</strong></th>
-          <th><strong>Trigger Time</strong></th>
-          <th><strong>Latest Acknowledgement</strong></th>
-          <th><strong>End to End Duration</strong></th>
+          <th><strong>状态</strong></th>
+          <th><strong>已响应</strong></th>
+          <th><strong>触发时间</strong></th>
+          <th><strong>最后响应</strong></th>
+          <th><strong>端到端耗时</strong></th>
           <th>
             <strong>
-              Checkpointed Data Size
+              快照数据量
               <i
                 class="header-icon"
                 nz-icon
@@ -251,8 +255,8 @@
               ></i>
             </strong>
           </th>
-          <th><strong>Full Checkpoint Data Size</strong></th>
-          <th><strong>Processed (persisted) in-flight data</strong></th>
+          <th><strong>完整快照数据量</strong></th>
+          <th><strong>经处理 (持久化) 传输数据量</strong></th>
         </tr>
       </thead>
       <tbody>
@@ -303,7 +307,7 @@
       </tbody>
     </nz-table>
   </nz-tab>
-  <nz-tab nzTitle="Summary">
+  <nz-tab nzTitle="统计">
     <nz-table
       *ngIf="checkPointStats"
       class="no-border small"
@@ -315,10 +319,10 @@
       <thead>
         <tr>
           <th></th>
-          <th><strong>End to End Duration</strong></th>
+          <th><strong>端到端耗时</strong></th>
           <th>
             <strong>
-              Checkpointed Data Size
+              快照数据量
               <i
                 class="header-icon"
                 nz-icon
@@ -328,8 +332,8 @@
               ></i>
             </strong>
           </th>
-          <th><strong>Full Checkpoint Data Size</strong></th>
-          <th><strong>Processed (persisted) in-flight data</strong></th>
+          <th><strong>完整快照数据量</strong></th>
+          <th><strong>经处理 (持久化) 传输数据量</strong></th>
         </tr>
       </thead>
       <tbody>
@@ -385,7 +389,7 @@
 
     <nz-collapse>
       <nz-collapse-panel
-        [nzHeader]="'Percentiles'"
+        [nzHeader]="'P50、P90、P99、P999'"
         [nzActive]="moreDetailsPanel.active"
         [nzDisabled]="moreDetailsPanel.disabled"
       >
@@ -400,10 +404,10 @@
           <thead>
             <tr>
               <th></th>
-              <th><strong>End to End Duration</strong></th>
-              <th><strong>Checkpointed Data Size</strong></th>
-              <th><strong>Full Checkpoint Data Size</strong></th>
-              <th><strong>Processed (persisted) in-flight data</strong></th>
+              <th><strong>端到端耗时</strong></th>
+              <th><strong>快照数据量</strong></th>
+              <th><strong>完整快照数据量</strong></th>
+              <th><strong>经处理 (持久化) 传输数据量</strong></th>
             </tr>
           </thead>
           <tbody>
@@ -474,7 +478,7 @@
       </nz-collapse-panel>
     </nz-collapse>
   </nz-tab>
-  <nz-tab nzTitle="Configuration">
+  <nz-tab nzTitle="配置">
     <nz-table
       class="no-border small"
       [nzData]="checkPointConfig ? [''] : []"

@@ -24,12 +24,12 @@ export type JobModuleConfig = Pick<ModuleConfig, 'routerTabs'>;
 
 export const JOB_MODULE_DEFAULT_CONFIG: Required<JobModuleConfig> = {
   routerTabs: [
-    { title: 'Overview', path: 'overview' },
-    { title: 'Exceptions', path: 'exceptions' },
-    { title: 'Data Skew', path: 'dataskew' },
-    { title: 'TimeLine', path: 'timeline' },
-    { title: 'Checkpoints', path: 'checkpoints' },
-    { title: 'Configuration', path: 'configuration' }
+    { title: '概览', path: 'overview' },
+    { title: '异常', path: 'exceptions' },
+    { title: '数据倾斜', path: 'dataskew' },
+    { title: '时间线', path: 'timeline' },
+    { title: '快照', path: 'checkpoints' },
+    { title: '配置', path: 'configuration' }
   ]
 };
 

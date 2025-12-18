@@ -30,17 +30,17 @@
 >
   <thead>
     <tr>
-      <th nzWidth="160px" nzLeft [nzSortFn]="sortEndpointFn">Endpoint</th>
-      <th nzWidth="150px" [nzSortFn]="sortReadBytesFn">Bytes received</th>
-      <th nzWidth="150px" [nzSortFn]="sortReadRecordsFn">Records received</th>
-      <th nzWidth="120px" [nzSortFn]="sortWriteBytesFn">Bytes sent</th>
-      <th nzWidth="150px" [nzSortFn]="sortWriteRecordsFn">Records sent</th>
-      <th nzWidth="200px" [nzSortFn]="sortStartTimeFn">Start Time</th>
-      <th nzWidth="200px" [nzSortFn]="sortEndTimeFn">End Time</th>
-      <th nzWidth="150px" [nzSortFn]="sortDurationFn">Duration</th>
-      <th nzWidth="120px">Tasks</th>
-      <th nzWidth="100px" nzRight [nzSortFn]="sortStatusFn">Status</th>
-      <th nzWidth="50px" nzRight>More</th>
+      <th nzWidth="160px" nzLeft [nzSortFn]="sortEndpointFn">节点</th>
+      <th nzWidth="150px" [nzSortFn]="sortReadBytesFn">接收字节</th>
+      <th nzWidth="150px" [nzSortFn]="sortReadRecordsFn">接收条数</th>
+      <th nzWidth="120px" [nzSortFn]="sortWriteBytesFn">发送字节</th>
+      <th nzWidth="150px" [nzSortFn]="sortWriteRecordsFn">发送条数</th>
+      <th nzWidth="200px" [nzSortFn]="sortStartTimeFn">启动时间</th>
+      <th nzWidth="200px" [nzSortFn]="sortEndTimeFn">结束时间</th>
+      <th nzWidth="150px" [nzSortFn]="sortDurationFn">持续时间</th>
+      <th nzWidth="120px">子任务</th>
+      <th nzWidth="100px" nzRight [nzSortFn]="sortStatusFn">状态</th>
+      <th nzWidth="50px" nzRight>更多</th>
     </tr>
   </thead>
   <tbody>
@@ -48,7 +48,7 @@
       <ng-container *ngIf="narrowLogData(data) as taskManager">
         <tr>
           <td nzLeft>
-            <span class="ellipsis-cell">{{ taskManager.endpoint }}</span>
+            <span class="ellipsis-cell">{{ taskManager.endpoint || taskManager.host }}</span>
           </td>
           <td>
             <span *ngIf="taskManager['metrics']['read-bytes-complete']; else loadingTemplate">

@@ -45,7 +45,7 @@ export class JobComponent implements OnInit, OnDestroy {
   ) {}
 
   get cardTitle(): string {
-    return this.isCompleted ? 'Completed Jobs' : 'Running Jobs';
+    return this.isCompleted ? '已完成作业(不包含KILLED)' : 'Running Jobs';
   }
 
   ngOnInit(): void {

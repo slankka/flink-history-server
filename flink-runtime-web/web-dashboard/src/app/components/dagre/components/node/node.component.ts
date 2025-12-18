@@ -43,11 +43,11 @@ export class NodeComponent {
   height = 0;
   id: string;
   backgroundBusyColor = '#ee6464';
-  backgroundDefaultColor = '#5db1ff';
+  backgroundDefaultColor = '#8c8c8c';
   backgroundPendingColor = '#ffffff';
   backgroundBackPressuredColor = '#888888';
   borderBusyColor = '#ee2222';
-  borderDefaultColor = '#1890ff';
+  borderDefaultColor = '#595959';
   borderPendingColor = '#000000';
   borderBackPressuredColor = '#000000';
 

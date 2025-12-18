@@ -23,3 +23,49 @@
   flex: 1;
   flex-direction: column;
 }
+
+.cluster-config-container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.version-warning {
+  margin: 16px;
+  border: 1px solid #ffecb3;
+  border-radius: 8px;
+  background-color: #fff8e1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  .version-warning-content {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+
+    .warning-icon {
+      flex-shrink: 0;
+      margin-right: 12px;
+
+      svg {
+        display: block;
+      }
+    }
+
+    .warning-text {
+      flex: 1;
+
+      .warning-title {
+        margin-bottom: 4px;
+        color: #f57c00;
+        font-weight: 600;
+        font-size: 16px;
+      }
+
+      .warning-description {
+        color: #5d4037;
+        font-size: 14px;
+        line-height: 1.4;
+      }
+    }
+  }
+}

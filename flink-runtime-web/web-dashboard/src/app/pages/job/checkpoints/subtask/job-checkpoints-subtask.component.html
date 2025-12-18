@@ -29,14 +29,14 @@
     <thead>
       <tr>
         <th></th>
-        <th><strong>End to End Duration</strong></th>
-        <th><strong>Checkpointed Data Size</strong></th>
-        <th><strong>Full Checkpoint Data Size</strong></th>
-        <th><strong>Sync Duration</strong></th>
-        <th><strong>Async Duration</strong></th>
-        <th><strong>Processed (persisted) Data</strong></th>
-        <th><strong>Alignment Duration</strong></th>
-        <th><strong>Start Delay</strong></th>
+        <th><strong>端到端延迟</strong></th>
+        <th><strong>快照数据量</strong></th>
+        <th><strong>完整快照数据量</strong></th>
+        <th><strong>同步耗时</strong></th>
+        <th><strong>移步耗时</strong></th>
+        <th><strong>经处理（持久化）数据量</strong></th>
+        <th><strong>对齐耗时</strong></th>
+        <th><strong>启动耗时</strong></th>
       </tr>
     </thead>
     <tbody>
@@ -47,7 +47,11 @@
             {{ subTaskCheckPoint['summary']['end_to_end_duration']['min'] | humanizeDuration }}
           </td>
           <td>
-            {{ subTaskCheckPoint['summary']['checkpointed_size']['min'] | humanizeBytes }}
+            {{
+              subTaskCheckPoint['summary']['checkpointed_size']
+                ? subTaskCheckPoint['summary']['checkpointed_size']['min']
+                : (subTaskCheckPoint['summary']['state_size']['min'] | humanizeBytes)
+            }}
           </td>
           <td>{{ subTaskCheckPoint['summary']['state_size']['min'] | humanizeBytes }}</td>
           <td>
@@ -76,7 +80,11 @@
             {{ subTaskCheckPoint['summary']['end_to_end_duration']['avg'] | humanizeDuration }}
           </td>
           <td>
-            {{ subTaskCheckPoint['summary']['checkpointed_size']['avg'] | humanizeBytes }}
+            {{
+              subTaskCheckPoint['summary']['checkpointed_size']
+                ? subTaskCheckPoint['summary']['checkpointed_size']['avg']
+                : (subTaskCheckPoint['summary']['state_size']['avg'] | humanizeBytes)
+            }}
           </td>
           <td>{{ subTaskCheckPoint['summary']['state_size']['avg'] | humanizeBytes }}</td>
           <td>
@@ -105,7 +113,11 @@
             {{ subTaskCheckPoint['summary']['end_to_end_duration']['max'] | humanizeDuration }}
           </td>
           <td>
-            {{ subTaskCheckPoint['summary']['checkpointed_size']['max'] | humanizeBytes }}
+            {{
+              subTaskCheckPoint['summary']['checkpointed_size']
+                ? subTaskCheckPoint['summary']['checkpointed_size']['max']
+                : (subTaskCheckPoint['summary']['state_size']['max'] | humanizeBytes)
+            }}
           </td>
           <td>{{ subTaskCheckPoint['summary']['state_size']['max'] | humanizeBytes }}</td>
           <td>
@@ -144,18 +156,18 @@
     <thead>
       <tr>
         <th><strong>ID</strong></th>
-        <th [nzSortFn]="sortAckTimestampFn"><strong>Acknowledged</strong></th>
-        <th [nzSortFn]="sortEndToEndDurationFn"><strong>End to End Duration</strong></th>
+        <th [nzSortFn]="sortAckTimestampFn"><strong>响应时间戳</strong></th>
+        <th [nzSortFn]="sortEndToEndDurationFn"><strong>端到端延时</strong></th>
         <th [nzSortFn]="sortCheckpointedSizeFn">
-          <strong>Checkpointed Data Size</strong>
+          <strong>快照数据量</strong>
         </th>
-        <th [nzSortFn]="sortStateSizeFn"><strong>Full Checkpoint Data Size</strong></th>
-        <th [nzSortFn]="sortCpSyncFn"><strong>Sync Duration</strong></th>
-        <th [nzSortFn]="sortCpAsyncFn"><strong>Async Duration</strong></th>
-        <th [nzSortFn]="sortAlignmentProcessedFn"><strong>Processed (persisted) Data</strong></th>
-        <th [nzSortFn]="sortAlignmentDurationFn"><strong>Alignment Duration</strong></th>
-        <th [nzSortFn]="sortStartDelayFn"><strong>Start Delay</strong></th>
-        <th [nzSortFn]="sortUnalignedCpFn"><strong>Unaligned Checkpoint</strong></th>
+        <th [nzSortFn]="sortStateSizeFn"><strong>完整快照数据量</strong></th>
+        <th [nzSortFn]="sortCpSyncFn"><strong>同步耗时</strong></th>
+        <th [nzSortFn]="sortCpAsyncFn"><strong>异步耗时</strong></th>
+        <th [nzSortFn]="sortAlignmentProcessedFn"><strong>经处理（持久化）数据量</strong></th>
+        <th [nzSortFn]="sortAlignmentDurationFn"><strong>对齐耗时</strong></th>
+        <th [nzSortFn]="sortStartDelayFn"><strong>启动耗时</strong></th>
+        <th [nzSortFn]="sortUnalignedCpFn"><strong>非对齐选项</strong></th>
         <ng-container
           *ngIf="table.data && table.data[0] && table.data[0]['status'] === 'pending_or_failed'"
         >
@@ -172,7 +184,13 @@
             {{ subTask['end_to_end_duration'] | humanizeDuration }}
             <span *ngIf="subTask['aborted']">(aborted)</span>
           </td>
-          <td>{{ subTask['checkpointed_size'] | humanizeBytes }}</td>
+          <td>
+            {{
+              subTask['checkpointed_size']
+                ? subTask['checkpointed_size']
+                : (subTask['state_size'] | humanizeBytes)
+            }}
+          </td>
           <td>{{ subTask['state_size'] | humanizeBytes }}</td>
           <td>{{ subTask['checkpoint']['sync'] | humanizeDuration }}</td>
           <td>{{ subTask['checkpoint']['async'] | humanizeDuration }}</td>

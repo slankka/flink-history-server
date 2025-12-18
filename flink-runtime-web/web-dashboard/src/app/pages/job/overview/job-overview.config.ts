@@ -41,14 +41,14 @@ export type JobOverviewModuleConfig = Omit<
 
 export const JOB_OVERVIEW_MODULE_DEFAULT_CONFIG: Required<JobOverviewModuleConfig> = {
   routerTabs: [
-    { title: 'Detail', path: 'detail' },
-    { title: 'SubTasks', path: 'subtasks' },
-    { title: 'TaskManagers', path: 'taskmanagers' },
-    { title: 'Watermarks', path: 'watermarks' },
-    { title: 'Accumulators', path: 'accumulators' },
-    { title: 'BackPressure', path: 'backpressure' },
-    { title: 'Metrics', path: 'metrics' },
-    { title: 'FlameGraph', path: 'flamegraph' }
+    { title: '详情', path: 'detail' },
+    { title: '算子', path: 'subtasks' },
+    { title: '任务管理器', path: 'taskmanagers' },
+    { title: '水位线', path: 'watermarks' },
+    { title: '累加器', path: 'accumulators' },
+    { title: '背压', path: 'backpressure' },
+    { title: '指标', path: 'metrics' },
+    { title: '火焰图', path: 'flamegraph' }
   ],
   customComponents: {
     taskManagerActionComponent: TaskmanagersTableActionComponent,

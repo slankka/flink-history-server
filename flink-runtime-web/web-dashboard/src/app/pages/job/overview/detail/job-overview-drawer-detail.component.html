@@ -18,39 +18,39 @@
 
 <ng-container *ngIf="node">
   <div class="name">
-    {{ node.description }}
+    {{ decodedDescription }}
   </div>
   <nz-divider></nz-divider>
   <div nz-row class="wrapper">
     <div nz-col [nzSpan]="12">
       <dl>
-        <dd>State</dd>
+        <dd>状态</dd>
         <dt>
           <flink-dynamic-host
             [data]="{ state: node.detail.status }"
             [component]="stateBadgeComponent"
           ></flink-dynamic-host>
         </dt>
-        <dd>Parallelism</dd>
+        <dd>并行度</dd>
         <dt>
           {{ node.detail.parallelism }}
         </dt>
         <dd>
-          Max Parallelism
+          最大并行度
           <i nz-tooltip [nzTooltipTitle]="maxParallelismTitle" nz-icon nzType="info-circle"></i>
         </dd>
         <dt>
           {{ node.detail.maxParallelism }}
         </dt>
-        <dd>Start Time</dd>
+        <dd>启动时间</dd>
         <dt>
           {{ node.detail['start-time'] | humanizeDate: 'yyyy-MM-dd HH:mm:ss.SSS' }}
         </dt>
-        <dd>End Time</dd>
+        <dd>结束时间</dd>
         <dt>
           {{ node.detail['end-time'] | humanizeDate: 'yyyy-MM-dd HH:mm:ss.SSS' }}
         </dt>
-        <dd>Duration</dd>
+        <dd>持续时间</dd>
         <dt>
           {{ node.detail.duration | humanizeDuration }}
         </dt>
@@ -58,32 +58,32 @@
     </div>
     <div nz-col [nzSpan]="12">
       <dl>
-        <dd>Task</dd>
+        <dd>作业数量（子任务）</dd>
         <dt>
           <flink-dynamic-host
             [data]="{ tasks: node.detail.tasks }"
             [component]="taskCountComponent"
           ></flink-dynamic-host>
         </dt>
-        <dd>Records Sent</dd>
+        <dd>已发送计数</dd>
         <dt>
           <span *ngIf="node.detail.metrics['write-records-complete']; else loadingTemplate">
             {{ node.detail.metrics['write-records'] | number: '1.0-0' }}
           </span>
         </dt>
-        <dd>Records Received</dd>
+        <dd>已接收计数</dd>
         <dt>
           <span *ngIf="node.detail.metrics['read-records-complete']; else loadingTemplate">
             {{ node.detail.metrics['read-records'] | number: '1.0-0' }}
           </span>
         </dt>
-        <dd>Bytes Sent</dd>
+        <dd>已发送字节</dd>
         <dt>
           <span *ngIf="node.detail.metrics['write-bytes-complete']; else loadingTemplate">
             {{ node.detail.metrics['write-bytes'] | humanizeBytes }}
           </span>
         </dt>
-        <dd>Bytes Received</dd>
+        <dd>已接收字节</dd>
         <dt>
           <span *ngIf="node.detail.metrics['read-bytes-complete']; else loadingTemplate">
             {{ node.detail.metrics['read-bytes'] | humanizeBytes }}

@@ -60,8 +60,18 @@ export class JobOverviewDrawerDetailComponent implements OnInit, OnDestroy {
   public node: NodesItemCorrect | null;
   public stateBadgeComponent: Type<unknown>;
   public taskCountComponent: Type<unknown>;
+  public decodedDescription: string | null = null;
 
   private readonly destroy$ = new Subject<void>();
+
+  /**
+   * Decode HTML entities and tags from text
+   */
+  private decodeHTML(value: string): string | null {
+    const parser = new DOMParser();
+    const dom = parser.parseFromString(`<!doctype html><body>${value}`, 'text/html');
+    return dom.body.textContent;
+  }
 
   constructor(
     private readonly jobLocalService: JobLocalService,
@@ -82,10 +92,17 @@ export class JobOverviewDrawerDetailComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(node => {
         this.node = node;
-        if (this.node != null && this.node.description != null) {
-          if (this.node.description.indexOf('<br/>') > 0) {
-            this.node.description = this.node.description.replace(/<br\/>/g, '\n');
+        if (this.node != null) {
+          let description = this.decodeHTML(this.node.description);
+          if (this.node.detail) {
+            description = this.decodeHTML(this.node.detail.name);
           }
+          if (description && description.indexOf('<br/>') > 0) {
+            description = description.replace(/<br\/>/g, '\n');
+          }
+          this.decodedDescription = description;
+        } else {
+          this.decodedDescription = null;
         }
         this.cdr.markForCheck();
       });

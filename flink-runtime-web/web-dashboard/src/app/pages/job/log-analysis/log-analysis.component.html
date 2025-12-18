@@ -1,0 +1,170 @@
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div class="log-analysis-container">
+  <nz-skeleton [nzActive]="true" *ngIf="isLoading"></nz-skeleton>
+
+  <ng-container *ngIf="!isLoading">
+    <nz-alert
+      *ngIf="vertexData.length === 0"
+      nzType="info"
+      nzMessage="未找到作业顶点数据"
+      nzShowIcon
+      style="margin-bottom: 16px"
+    ></nz-alert>
+
+    <div style="margin-bottom: 16px; display: flex; justify-content: flex-end;" *ngIf="vertexData.length > 0">
+      <button nz-button [nzType]="'default'" (click)="toggleCollapseAll()">
+        {{ collapseAll ? '展开全部' : '折叠全部' }}
+      </button>
+    </div>
+
+    <nz-collapse *ngIf="vertexData.length > 0" [nzBordered]="true" style="margin-bottom: 16px">
+      <ng-container *ngFor="let vertexItem of vertexData; trackBy: trackByVertexId; let i = index">
+        <nz-collapse-panel
+          [nzHeader]="vertexItem.vertex.name + ' (' + vertexItem.vertex.id + ')'"
+          [nzActive]="vertexItem.isExpanded"
+        >
+          <ng-template #nzHeader>
+            <div style="display: flex; align-items: center; justify-content: space-between">
+              <span>
+                {{ vertexItem.vertex.name }} ({{ vertexItem.vertex.id }})
+                <flink-dynamic-host
+                  [data]="{ state: vertexItem.vertex.status }"
+                  [component]="stateBadgeComponent"
+                  style="margin-left: 8px"
+                ></flink-dynamic-host>
+              </span>
+              <span>共 {{ vertexItem.taskManagers.length }} 个任务管理器</span>
+            </div>
+          </ng-template>
+
+          <nz-alert
+            *ngIf="vertexItem.error"
+            nzType="error"
+            [nzMessage]="vertexItem.error"
+            nzShowIcon
+            style="margin-bottom: 16px"
+          ></nz-alert>
+
+          <nz-skeleton [nzActive]="true" *ngIf="vertexItem.isLoading"></nz-skeleton>
+
+          <nz-table
+            *ngIf="!vertexItem.isLoading && vertexItem.taskManagers.length > 0"
+            nzSize="small"
+            [nzData]="vertexItem.taskManagers"
+            [nzScroll]="{ x: '1400px', y: '400px' }"
+            [nzFrontPagination]="true"
+            [nzPageSize]="10"
+            [nzShowPagination]="true"
+            [nzPageSizeOptions]="[5, 10, 20]"
+            [nzVirtualItemSize]="36"
+            [nzVirtualForTrackBy]="trackByEndpoint"
+            class="fixed-columns-table"
+          >
+            <thead>
+              <tr>
+                <th nzWidth="200px" nzLeft>节点</th>
+                <th nzWidth="350px" nzLeft>容器ID</th>
+                <th nzWidth="150px">接收字节</th>
+                <th nzWidth="150px">接收条数</th>
+                <th nzWidth="150px">发送字节</th>
+                <th nzWidth="150px">发送条数</th>
+                <th nzWidth="150px">持续时间</th>
+                <th nzWidth="120px">子任务</th>
+                <th nzWidth="120px" nzRight>状态</th>
+                <th nzWidth="150px" nzRight>日志链接</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let taskManager of vertexItem.taskManagers; trackBy: trackByEndpoint">
+                <td nzLeft>
+                  <span class="ellipsis-cell">{{ taskManager.endpoint || taskManager.host }}</span>
+                </td>
+                <td nzLeft>
+                  <span class="ellipsis-cell">{{ taskManager['taskmanager-id'] }}</span>
+                </td>
+                <td>
+                  <span *ngIf="taskManager['metrics']['read-bytes-complete']; else loadingTemplate">
+                    {{ taskManager['metrics']['read-bytes'] | humanizeBytes }}
+                  </span>
+                </td>
+                <td>
+                  <span
+                    *ngIf="taskManager['metrics']['read-records-complete']; else loadingTemplate"
+                  >
+                    {{ taskManager['metrics']['read-records'] | number }}
+                  </span>
+                </td>
+                <td>
+                  <span
+                    *ngIf="taskManager['metrics']['write-bytes-complete']; else loadingTemplate"
+                  >
+                    {{ taskManager['metrics']['write-bytes'] | humanizeBytes }}
+                  </span>
+                </td>
+                <td>
+                  <span
+                    *ngIf="taskManager['metrics']['write-records-complete']; else loadingTemplate"
+                  >
+                    {{ taskManager['metrics']['write-records'] | number }}
+                  </span>
+                </td>
+                <td>{{ taskManager.duration | humanizeDuration }}</td>
+                <td>
+                  <flink-dynamic-host
+                    [data]="{ tasks: taskManager['status-counts'] }"
+                    [component]="taskCountBadgeComponent"
+                  ></flink-dynamic-host>
+                </td>
+                <td nzRight>
+                  <flink-dynamic-host
+                    [data]="{ state: taskManager['status'] }"
+                    [component]="stateBadgeComponent"
+                  ></flink-dynamic-host>
+                </td>
+                <td nzRight>
+                  <a
+                    *ngIf="taskManager.logUrl; else noLogTemplate"
+                    [href]="taskManager.logUrl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style="font-size: 12px"
+                  >
+                    查看日志
+                  </a>
+                  <ng-template #noLogTemplate>
+                    <span style="color: #999; font-size: 12px">无日志</span>
+                  </ng-template>
+                </td>
+              </tr>
+            </tbody>
+          </nz-table>
+
+          <div *ngIf="!vertexItem.isLoading && vertexItem.taskManagers.length === 0">
+            <nz-alert nzType="info" nzMessage="该顶点暂无任务管理器数据" nzShowIcon></nz-alert>
+          </div>
+        </nz-collapse-panel>
+      </ng-container>
+    </nz-collapse>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+  <i nz-icon nzType="loading"></i>
+</ng-template>

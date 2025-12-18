@@ -16,9 +16,40 @@
   ~ limitations under the License.
   -->
 
-<flink-configuration-cards
-  title="Job Manager Configuration"
-  [configurations]="configurations"
-  [environmentInfo]="environmentInfo"
-  [loading]="loading"
-></flink-configuration-cards>
+<div class="cluster-config-container">
+  <!-- Version requirement warning -->
+  @if (!isVersionSupported) {
+  <div class="version-warning">
+    <div class="version-warning-content">
+      <div class="warning-icon">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+            fill="#F6A623"
+          />
+        </svg>
+      </div>
+      <div class="warning-text">
+        <div class="warning-title">Version Requirement</div>
+        <div class="warning-description">
+          这个页面要求 Flink 1.16 以及以上的版本. 集群环境页 对这个作业版本不可用
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Configuration content (empty when version is not supported) -->
+  <flink-configuration-cards
+    title="Job Manager Configuration"
+    [configurations]="isVersionSupported ? configurations : []"
+    [environmentInfo]="isVersionSupported ? environmentInfo : undefined"
+    [loading]="loading && isVersionSupported"
+  ></flink-configuration-cards>
+</div>

@@ -51,33 +51,61 @@ export class JobDetailComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.statusService.refresh$
-      .pipe(
-        takeUntil(this.destroy$),
-        mergeMap(() =>
-          this.jobService.loadJob(this.activatedRoute.snapshot.params.jid).pipe(
-            tap(job => {
-              this.jobLocalService.setJobDetail(job);
-            }),
-            catchError(() => {
-              this.jobService.loadExceptions(this.activatedRoute.snapshot.params.jid, 10).subscribe(data => {
-                this.errorDetails = data['root-exception'];
-                this.cdr.markForCheck();
-              });
-
-              this.isError = true;
-              this.isLoading = false;
+    // For History Server, disable refresh as jobs are completed
+    if (this.statusService.configuration?.features['web-history']) {
+      // Load job data once for History Server
+      this.jobService
+        .loadJob(this.activatedRoute.snapshot.params.jid)
+        .pipe(
+          tap(job => {
+            this.jobLocalService.setJobDetail(job);
+            this.isLoading = false;
+            this.isError = false;
+            this.cdr.markForCheck();
+          }),
+          catchError(() => {
+            this.jobService.loadExceptions(this.activatedRoute.snapshot.params.jid, 10).subscribe(data => {
+              this.errorDetails = data['root-exception'];
               this.cdr.markForCheck();
-              return EMPTY;
-            })
+            });
+
+            this.isError = true;
+            this.isLoading = false;
+            this.cdr.markForCheck();
+            return EMPTY;
+          })
+        )
+        .subscribe();
+    } else {
+      // Normal refresh logic for live Flink cluster
+      this.statusService.refresh$
+        .pipe(
+          takeUntil(this.destroy$),
+          mergeMap(() =>
+            this.jobService.loadJob(this.activatedRoute.snapshot.params.jid).pipe(
+              tap(job => {
+                this.jobLocalService.setJobDetail(job);
+              }),
+              catchError(() => {
+                this.jobService.loadExceptions(this.activatedRoute.snapshot.params.jid, 10).subscribe(data => {
+                  this.errorDetails = data['root-exception'];
+                  this.cdr.markForCheck();
+                });
+
+                this.isError = true;
+                this.isLoading = false;
+                this.cdr.markForCheck();
+                return EMPTY;
+              })
+            )
           )
         )
-      )
-      .subscribe(() => {
-        this.isLoading = false;
-        this.isError = false;
-        this.cdr.markForCheck();
-      });
+        .subscribe(() => {
+          this.isLoading = false;
+          this.isError = false;
+          this.cdr.markForCheck();
+        });
+    }
   }
 
   ngOnDestroy(): void {

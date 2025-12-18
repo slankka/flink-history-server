@@ -16,29 +16,6 @@
   ~ limitations under the License.
   -->
 
-<ng-template #extraTpl>
-  <div class="operate-action">
-    <span *ngIf="statusTips">{{ statusTips }}</span>
-    <ng-container *ngIf="!statusTips">
-      <a
-        nz-popconfirm
-        nzPopconfirmTitle="Cancel Job?"
-        nzOkText="Yes"
-        nzCancelText="No"
-        (nzOnConfirm)="cancelJob()"
-        *ngIf="
-          webCancelEnabled &&
-          (jobDetail.state === 'RUNNING' ||
-            jobDetail.state === 'CREATED' ||
-            jobDetail.state === 'RESTARTING')
-        "
-      >
-        Cancel Job
-      </a>
-    </ng-container>
-  </div>
-</ng-template>
-
 <ng-container *ngIf="jobDetail && !isLoading">
   <nz-descriptions
     [nzTitle]="jobDetail.name"
@@ -47,15 +24,15 @@
     nzSize="small"
     [nzColumn]="{ xxl: 3, xl: 3, lg: 2, md: 2, sm: 1, xs: 1 }"
   >
-    <nz-descriptions-item nzTitle="Job ID">{{ jobDetail.jid }}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Job State">
+    <nz-descriptions-item nzTitle="作业 ID">{{ jobDetail.jid }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="作业状态">
       <div class="status-wrapper">
         <flink-job-badge [state]="jobDetail.state"></flink-job-badge>
         <nz-divider nzType="vertical"></nz-divider>
         <flink-task-badge [tasks]="jobDetail['status-counts']"></flink-task-badge>
       </div>
     </nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Actions">
+    <nz-descriptions-item nzTitle="作业日志">
       <a
         *ngIf="!isHistoryServer; else historyServerActions"
         [routerLink]="['/job-manager', 'logs']"
@@ -68,16 +45,16 @@
         <span *ngIf="urlLoading">-</span>
       </ng-template>
     </nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Job Type" *ngIf="jobDetail['job-type'] !== undefined">
+    <nz-descriptions-item nzTitle="作业类型" *ngIf="jobDetail['job-type'] !== undefined">
       {{ jobDetail['job-type'] }}
     </nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Start Time">
+    <nz-descriptions-item nzTitle="启动时间">
       {{ jobDetail['start-time'] | date: 'yyyy-MM-dd HH:mm:ss.SSS' }}
     </nz-descriptions-item>
-    <nz-descriptions-item nzTitle="End Time" *ngIf="jobDetail['end-time'] > -1">
+    <nz-descriptions-item nzTitle="停止时间" *ngIf="jobDetail['end-time'] > -1">
       {{ jobDetail['end-time'] | date: 'yyyy-MM-dd HH:mm:ss.SSS' }}
     </nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Duration">
+    <nz-descriptions-item nzTitle="持续时间">
       {{ jobDetail.duration | humanizeDuration }}
     </nz-descriptions-item>
   </nz-descriptions>

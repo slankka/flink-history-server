@@ -37,6 +37,7 @@ export class ClusterConfigComponent implements OnInit, OnDestroy {
   configurations: ClusterConfiguration[] = [];
   environmentInfo?: EnvironmentInfo;
   loading = true;
+  isVersionSupported = false;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -47,17 +48,29 @@ export class ClusterConfigComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.jobId = this.activatedRoute.parent!.snapshot.params.jid;
+
+    // Load configuration data and check API availability simultaneously
     forkJoin([
       this.jobManagerService
         .loadHistoryServerConfig(this.jobId)
         .pipe(catchError(() => of([] as ClusterConfiguration[]))),
-      this.jobManagerService.loadHistoryServerEnvironment(this.jobId).pipe(catchError(() => of(undefined)))
+      this.jobManagerService.loadHistoryServerEnvironment(this.jobId).pipe(
+        catchError(error => {
+          // If 404 error, it means the API is not available (Flink version < 1.16)
+          this.isVersionSupported = error.status !== 404;
+          return of(undefined);
+        })
+      )
     ])
       .pipe(takeUntil(this.destroy$))
       .subscribe(([config, env]) => {
         this.loading = false;
         this.configurations = config.sort((pre, next) => (pre.key > next.key ? 1 : -1));
         this.environmentInfo = env;
+        // If no error occurred, API is available (Flink version >= 1.16)
+        if (env) {
+          this.isVersionSupported = true;
+        }
         this.cdr.markForCheck();
       });
   }

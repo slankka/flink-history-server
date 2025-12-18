@@ -48,12 +48,13 @@ const OVERRIDE_JOB_MODULE_CONFIG_FACTORY = (statusService: StatusService): JobMo
   return {
     routerTabs: isHistoryServer
       ? [
-          { title: 'Overview', path: 'overview' },
-          { title: 'Exceptions', path: 'exceptions' },
-          { title: 'TimeLine', path: 'timeline' },
-          { title: 'Checkpoints', path: 'checkpoints' },
-          { title: 'Job Configuration', path: 'configuration' },
-          { title: 'Cluster Configuration', path: 'cluster_configuration' }
+          { title: '概览', path: 'overview' },
+          { title: '异常', path: 'exceptions' },
+          { title: '时间线', path: 'timeline' },
+          { title: '快照', path: 'checkpoints' },
+          { title: '任务配置', path: 'configuration' },
+          { title: '集群环境', path: 'cluster_configuration' },
+          { title: '日志分析', path: 'log-analysis' }
         ]
       : JOB_MODULE_DEFAULT_CONFIG.routerTabs
   };
@@ -138,6 +139,13 @@ export const COMPLETED_JOB_ROUES: Routes = [
         canActivate: [ClusterConfigGuard],
         data: {
           path: 'cluster_configuration'
+        }
+      },
+      {
+        path: 'log-analysis',
+        loadComponent: () => import('../../log-analysis/log-analysis.component').then(m => m.LogAnalysisComponent),
+        data: {
+          path: 'log-analysis'
         }
       },
       { path: '**', redirectTo: 'overview', pathMatch: 'full' }

@@ -16,7 +16,7 @@
   ~ limitations under the License.
   -->
 <nz-tabs [nzTabBarGutter]="16" [nzSize]="'small'">
-  <nz-tab nzTitle="Subtask Metrics">
+  <nz-tab nzTitle="算子 指标">
     <nz-table
       nzSize="small"
       [nzLoading]="isLoading"
@@ -202,7 +202,7 @@
       </tbody>
     </nz-table>
   </nz-tab>
-  <nz-tab nzTitle="Aggregated Metrics">
+  <nz-tab nzTitle="聚合指标">
     <flink-table-aggregated-metrics
       [isLoading]="isLoading"
       [aggregated]="aggregated"

@@ -16,30 +16,30 @@
   ~ limitations under the License.
   -->
 <div class="extra">
-  <strong>Checkpoint Detail:</strong>
+  <strong>快照详情:</strong>
   <div class="more-detail">
-    <strong>Path:</strong>
+    <strong>路径:</strong>
     {{ checkPointDetail?.external_path || '-' }}
     <nz-divider nzType="vertical"></nz-divider>
-    <strong>Discarded:</strong>
+    <strong>丢弃:</strong>
     {{ checkPointDetail?.discarded || '-' }}
     <nz-divider nzType="vertical"></nz-divider>
-    <strong>Checkpoint Type:</strong>
+    <strong>快照类型:</strong>
     {{ checkPointType }}
     <ng-container *ngIf="checkPointDetail?.savepointFormat">
       <nz-divider nzType="vertical"></nz-divider>
-      <strong>Savepoint Format:</strong>
+      <strong>存档格式:</strong>
       {{ checkPointDetail?.savepointFormat || '-' }}
     </ng-container>
     <ng-container *ngIf="checkPointDetail?.failure_message">
       <nz-divider nzType="vertical"></nz-divider>
-      <strong>Failure Message:</strong>
+      <strong>失败信息:</strong>
       {{ checkPointDetail?.failure_message || '-' }}
     </ng-container>
   </div>
 </div>
 <div class="operators">
-  <strong>Operators:</strong>
+  <strong>算子:</strong>
   <nz-table
     class="no-border small"
     [nzSize]="'small'"
@@ -51,13 +51,13 @@
     <thead>
       <tr>
         <th nzWidth="70px"></th>
-        <th><strong>Name</strong></th>
-        <th><strong>Acknowledged</strong></th>
-        <th><strong>Latest Acknowledgment</strong></th>
-        <th><strong>End to End Duration</strong></th>
-        <th><strong>Checkpointed Data Size</strong></th>
-        <th><strong>Full Checkpoint Data Size</strong></th>
-        <th><strong>Processed (persisted) in-flight data</strong></th>
+        <th><strong>名称</strong></th>
+        <th><strong>已响应</strong></th>
+        <th><strong>最新响应</strong></th>
+        <th><strong>端到端延时</strong></th>
+        <th><strong>快照数据量</strong></th>
+        <th><strong>完成快照数据量</strong></th>
+        <th><strong>经处理 (持久化) 传输数据量</strong></th>
       </tr>
     </thead>
     <tbody *ngIf="checkPointDetail">
